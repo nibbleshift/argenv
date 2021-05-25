@@ -26,6 +26,15 @@ type Entry struct {
 	Default     string
 }
 
+var Usage = func() {
+	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
+	flag.PrintDefaults()
+	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
+	for _,e := range *g_Entries {
+		fmt.Fprintf(os.Stderr, "\t%s\n", e.EnvName)
+	}
+}
+
 func normalize(name string) (envName string, flagName string) {
 	for i, c := range name {
 		// envName
@@ -108,11 +117,3 @@ func (e *ArgEnv) Load(o interface{}) {
 	g_Entries = &e.Entries
 }
 
-var Usage = func() {
-	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
-	flag.PrintDefaults()
-	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
-	for _,e := range *g_Entries {
-		fmt.Fprintf(os.Stderr, "\t%s\n", e.EnvName)
-	}
-}
