@@ -58,10 +58,6 @@ func setValue(o reflect.Value, field string, value interface{}) {
 	}
 }
 
-func setInt(o interface{}, field string, value int) {
-    reflect.ValueOf(&o).Elem().FieldByName(field).SetInt(7)
-}
-
 func (e *ArgEnv) Load(o interface{}) {
     val := reflect.ValueOf(o).Elem()
 
@@ -82,13 +78,26 @@ func (e *ArgEnv) Load(o interface{}) {
 		switch item.Type.String() {
 			case "string":
 				var value string
-				flag.StringVar(&value, item.FlagName, item.Default, item.Description)
+
+				value, ok := os.LookupEnv(item.EnvName)
+
+				if !ok {
+					flag.StringVar(&value, item.FlagName, item.Default, item.Description)
+				}
 				setValue(item.Value, item.FlagName, value)
 			case "int":
 				var value int
-				i, _ := strconv.ParseInt(item.Default, 10, 64)
-				flag.IntVar(&value, item.FlagName, int(i), item.Description)
-				setValue(item.Value, item.FlagName, value)
+				var i int64
+
+				strValue, ok := os.LookupEnv(item.EnvName)
+
+				if !ok {
+					i, _ = strconv.ParseInt(item.Default, 10, 64)
+					flag.IntVar(&value, item.FlagName, int(i), item.Description)
+				} else {
+					i, _ = strconv.ParseInt(strValue, 10, 64)
+				}
+				setValue(item.Value, item.FlagName, int(i))
 			default:
 				fmt.Printf("Unknown type %s\n", item.Type)
 		}
