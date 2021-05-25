@@ -16,6 +16,8 @@ type Test2 struct {
     Apple string `default:"One" description:"Description of One"`
     Orange string `default:"Second" description:"Description of SecondVariable"`
     Banana int `default:"33" description:"Description of ThirdVariableS"`
+    AppleSauce int `default:"Random" description:"Description of ThirdVariableS"`
+    AppleSauceS int `default:"MoreRandom" description:"Description of ThirdVariableS"`
 }
 
 var test1 *Test1
@@ -44,6 +46,8 @@ func TestLoadEnv(t *testing.T) {
 	os.Setenv("APPLE", "Two")
 	os.Setenv("ORANGE", "First")
 	os.Setenv("BANANA", "66")
+	os.Setenv("APPLE_SAUCE", "Toast")
+	os.Setenv("APPLE_SAUCE_S", "Toasted")
 
     e := &ArgEnv{}
     test2 = &Test2{}
