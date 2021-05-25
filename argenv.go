@@ -14,6 +14,8 @@ type ArgEnv struct {
 	Entries []Entry
 }
 
+var g_Entries *[]Entry
+
 type Entry struct {
 	Name        string
 	EnvName     string
@@ -102,9 +104,15 @@ func (e *ArgEnv) Load(o interface{}) {
 		}
 	}
 	flag.Parse()
+
+	g_Entries = &e.Entries
 }
 
 var Usage = func() {
 	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
+	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
+	for _,e := range *g_Entries {
+		fmt.Fprintf(os.Stderr, "\t%s\n", e.EnvName)
+	}
 }
