@@ -1,23 +1,23 @@
 package argenv
 
 import (
-	"testing"
-	"reflect"
 	"os"
+	"reflect"
+	"testing"
 )
 
 type Test1 struct {
-    One string `default:"One" description:"Description of One"`
-    SecondVariable string `default:"Second" description:"Description of SecondVariable"`
-    ThirdVariableS int `default:"33" description:"Description of ThirdVariableS"`
+	One            string `default:"One" description:"Description of One"`
+	SecondVariable string `default:"Second" description:"Description of SecondVariable"`
+	ThirdVariableS int    `default:"33" description:"Description of ThirdVariableS"`
 }
 
 type Test2 struct {
-    Apple string `default:"One" description:"Description of One"`
-    Orange string `default:"Second" description:"Description of SecondVariable"`
-    Banana int `default:"33" description:"Description of ThirdVariableS"`
-    AppleSauce int `default:"Random" description:"Description of ThirdVariableS"`
-    AppleSauceS int `default:"MoreRandom" description:"Description of ThirdVariableS"`
+	Apple       string `default:"One" description:"Description of One"`
+	Orange      string `default:"Second" description:"Description of SecondVariable"`
+	Banana      int    `default:"33" description:"Description of ThirdVariableS"`
+	AppleSauce  int    `default:"Random" description:"Description of ThirdVariableS"`
+	AppleSauceS int    `default:"MoreRandom" description:"Description of ThirdVariableS"`
 }
 
 var test1 *Test1
@@ -30,11 +30,10 @@ func assertEqual(t *testing.T, a interface{}, b interface{}) {
 	t.Errorf("Received %v (type %v), expected %v (type %v)", a, reflect.TypeOf(a), b, reflect.TypeOf(b))
 }
 
-
 func TestLoad(t *testing.T) {
-    e := &ArgEnv{}
-    test1 = &Test1{}
-    e.Load(test1)
+	e := &ArgEnv{}
+	test1 = &Test1{}
+	e.Load(test1)
 
 	assertEqual(t, test1.One, "One")
 	assertEqual(t, test1.SecondVariable, "Second")
@@ -49,10 +48,9 @@ func TestLoadEnv(t *testing.T) {
 	os.Setenv("APPLE_SAUCE", "Toast")
 	os.Setenv("APPLE_SAUCE_S", "Toasted")
 
-    e := &ArgEnv{}
-    test2 = &Test2{}
-    e.Load(test2)
-
+	e := &ArgEnv{}
+	test2 = &Test2{}
+	e.Load(test2)
 
 	assertEqual(t, test2.Apple, "Two")
 	assertEqual(t, test2.Orange, "First")
