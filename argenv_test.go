@@ -2,6 +2,7 @@ package argenv
 
 import (
 	"testing"
+	"reflect"
 )
 
 type MyTest struct {
@@ -12,8 +13,20 @@ type MyTest struct {
 
 var test *MyTest
 
-func TestLoad(t *testing.T) {
+func assertEqual(t *testing.T, a interface{}, b interface{}) {
+	if a == b {
+		return
+	}
+	t.Errorf("Received %v (type %v), expected %v (type %v)", a, reflect.TypeOf(a), b, reflect.TypeOf(b))
+}
+
+
+func TestLoadValues(t *testing.T) {
     e := &ArgEnv{}
     test = &MyTest{}
     e.Load(test)
+
+	assertEqual(t, test.One, "One")
+	assertEqual(t, test.SecondVariable, "Second")
+	assertEqual(t, test.ThirdVariableS, 33)
 }

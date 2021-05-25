@@ -7,6 +7,7 @@ import (
 	"unicode"
 	"strings"
 	"os"
+	"strconv"
 )
 
 
@@ -47,8 +48,8 @@ func normalize(name string) (envName string, flagName string) {
 func setValue(o reflect.Value, field string, value interface{}) {
 	switch v := value.(type) {
 		case int:
-			intVal,_ := value.(int64)
-			o.SetInt(intVal)
+			intVal,_ := value.(int)
+			o.SetInt(int64(intVal))
 		case string:
 			strVal,_ := value.(string)
 			o.SetString(strVal)
@@ -85,15 +86,14 @@ func (e *ArgEnv) Load(o interface{}) {
 				setValue(item.Value, item.FlagName, value)
 			case "int":
 				var value int
-				flag.IntVar(&value, item.FlagName, 0, item.Description)
+				i, _ := strconv.ParseInt(item.Default, 10, 64)
+				flag.IntVar(&value, item.FlagName, int(i), item.Description)
+				setValue(item.Value, item.FlagName, value)
 			default:
 				fmt.Printf("Unknown type %s\n", item.Type)
 		}
 	}
-
 	flag.Parse()
-
-
 }
 
 var Usage = func() {
