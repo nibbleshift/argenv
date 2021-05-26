@@ -64,7 +64,6 @@ func Usage() {
 	fmt.Fprintf(os.Stdout, "ArgEnv Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
 	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
-	fmt.Printf("gEntries: %+v\n", gEntries)
 	for _,e := range gEntries {
 		fmt.Fprintf(os.Stdout, "\t%s\n", e.EnvName)
 	}
