@@ -14,7 +14,7 @@ type ArgEnv struct {
 	Entries []Entry
 }
 
-var gEntries *[]Entry
+var gEntries []Entry
 
 type Entry struct {
 	Name        string
@@ -64,7 +64,7 @@ func Usage() {
 	fmt.Fprintf(os.Stdout, "ArgEnv Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
 	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
-	for _,e := range *gEntries {
+	for _,e := range gEntries {
 		fmt.Fprintf(os.Stdout, "\t%s\n", e.EnvName)
 	}
 }
@@ -72,7 +72,7 @@ func Usage() {
 func (e *ArgEnv) Load(o interface{}) {
 	val := reflect.ValueOf(o).Elem()
 
-	e.Entries = make([]Entry, val.NumField())
+	gEntries = make([]Entry, val.NumField())
 
 	for i := 0; i < val.NumField(); i++ {
 		entry := Entry{}
@@ -82,10 +82,10 @@ func (e *ArgEnv) Load(o interface{}) {
 		entry.Value = val.Field(i)
 		entry.Description = reflect.TypeOf(o).Elem().Field(i).Tag.Get("description")
 		entry.Default = reflect.TypeOf(o).Elem().Field(i).Tag.Get("default")
-		e.Entries[i] = entry
+		gEntries[i] = entry
 	}
 
-	for _, item := range e.Entries {
+	for _, item := range gEntries {
 		switch item.Type.String() {
 		case "string":
 			var value string
@@ -115,7 +115,5 @@ func (e *ArgEnv) Load(o interface{}) {
 	}
 	flag.Usage = Usage
 	flag.Parse()
-
-	gEntries = &e.Entries
 }
 
