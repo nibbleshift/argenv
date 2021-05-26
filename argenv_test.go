@@ -20,8 +20,17 @@ type Test2 struct {
 	AppleSauceS int    `default:"MoreRandom" description:"Description of ThirdVariableS"`
 }
 
+type Test3 struct {
+	ApiHost       string `default:"One" description:"Description of ApiHost"`
+	DbHost      string `default:"Second" description:"Description of DbHost"`
+	EnableGlob     int    `default:"1" description:"Description of EnableGlob"`
+	AllowRoot  int    `default:"0" description:"Description of AllowRoot"`
+	SecureCopyR int    `default:"1" description:"Description of SecureCopyR"`
+}
+
 var test1 *Test1
 var test2 *Test2
+var test3 *Test3
 
 func assertEqual(t *testing.T, a interface{}, b interface{}) {
 	if a == b {
@@ -41,6 +50,19 @@ func TestLoad(t *testing.T) {
 }
 
 func TestLoadEnv(t *testing.T) {
+	e := &ArgEnv{}
+	test2 = &Test2{}
+	e.Load(test2)
+
+	os.Setenv("APPLE", "Two")
+	os.Setenv("ORANGE", "First")
+	os.Setenv("BANANA", "66")
+	os.Setenv("APPLE_SAUCE", "Toast")
+	os.Setenv("APPLE_SAUCE_S", "Toasted")
+
+}
+
+func TestUsage(t *testing.T) {
 
 	os.Setenv("APPLE", "Two")
 	os.Setenv("ORANGE", "First")
@@ -49,10 +71,6 @@ func TestLoadEnv(t *testing.T) {
 	os.Setenv("APPLE_SAUCE_S", "Toasted")
 
 	e := &ArgEnv{}
-	test2 = &Test2{}
-	e.Load(test2)
-
-	assertEqual(t, test2.Apple, "Two")
-	assertEqual(t, test2.Orange, "First")
-	assertEqual(t, test2.Banana, 66)
+	test3 = &Test3{}
+	e.Load(test3)
 }

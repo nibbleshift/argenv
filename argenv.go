@@ -26,14 +26,6 @@ type Entry struct {
 	Default     string
 }
 
-var Usage = func() {
-	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
-	flag.PrintDefaults()
-	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
-	for _,e := range *g_Entries {
-		fmt.Fprintf(os.Stderr, "\t%s\n", e.EnvName)
-	}
-}
 
 func normalize(name string) (envName string, flagName string) {
 	for i, c := range name {
@@ -65,6 +57,15 @@ func setValue(o reflect.Value, field string, value interface{}) {
 		o.SetString(strVal)
 	default:
 		fmt.Println("Unknown type: ", v)
+	}
+}
+
+func Usage() {
+	fmt.Fprintf(os.Stdout, "ArgEnv Usage of %s:\n", os.Args[0])
+	flag.PrintDefaults()
+	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
+	for _,e := range *g_Entries {
+		fmt.Fprintf(os.Stdout, "\t%s\n", e.EnvName)
 	}
 }
 
@@ -112,6 +113,7 @@ func (e *ArgEnv) Load(o interface{}) {
 			fmt.Printf("Unknown type %s\n", item.Type)
 		}
 	}
+	flag.Usage = Usage
 	flag.Parse()
 
 	g_Entries = &e.Entries
