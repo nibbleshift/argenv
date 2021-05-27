@@ -152,7 +152,11 @@ func (e *ArgEnv) setupFlags() (err error) {
 			e.values[e.entries[i].Name] = &value
 		case "int":
 			var value int
-			flag.IntVar(&value, e.entries[i].FlagName, 0, e.entries[i].Description)
+			var defaultValue int64
+
+			defaultValue, _ = strconv.ParseInt(e.entries[i].Default, 10, 64)
+
+			flag.IntVar(&value, e.entries[i].FlagName, int(defaultValue), e.entries[i].Description)
 			e.values[e.entries[i].Name] = &value
 		default:
 			log.Printf("Unknown type %s\n", e.entries[i].Type)
@@ -230,12 +234,13 @@ func (e *ArgEnv) processEntries() (err error) {
 
 			if ok {
 				value = *ptrValue
-			}
+			} else {
+				intVal, err = strconv.ParseInt(e.entries[i].Default, 10, 64)
 
-			intVal, err = strconv.ParseInt(e.entries[i].Default, 10, 64)
-
-			if err == nil {
-				value = int(intVal)
+				if err == nil {
+					value = int(intVal)
+					fmt.Println(value)
+				}
 			}
 
 			strEnvValue, ok := os.LookupEnv(e.entries[i].EnvName)
