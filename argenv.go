@@ -1,41 +1,41 @@
 package argenv
 
 import (
+	"errors"
 	"flag"
 	"fmt"
+	_ "github.com/davecgh/go-spew/spew"
 	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 	"unicode"
-	"errors"
-	_ "github.com/davecgh/go-spew/spew"
 )
 
 // ArgEnv represents the object used to process Environment and command line parameters.
 type ArgEnv struct {
-	base interface{} // the struct that we are processing (the interface that was passed to Load())
-	entries []Entry // Entry objects that we scanned in `base`, i.e. one Entry per field in base
-	values map[string]interface{} // values for the environment variables/command line parameters
+	base    interface{}            // the struct that we are processing (the interface that was passed to Load())
+	entries []Entry                // Entry objects that we scanned in `base`, i.e. one Entry per field in base
+	values  map[string]interface{} // values for the environment variables/command line parameters
 }
 
 // Entry represents a single field in a struct.
 type Entry struct {
-	Name        string // Name is the name of a field in a struct
-	EnvName     string // EnvName is the Environment variable name
-	FlagName    string // FlagName is the name of the command line parameter
-	Type        string // Type is the reflect.Type of the field
+	Name        string        // Name is the name of a field in a struct
+	EnvName     string        // EnvName is the Environment variable name
+	FlagName    string        // FlagName is the name of the command line parameter
+	Type        string        // Type is the reflect.Type of the field
 	Value       reflect.Value // Value is the reflect.Value of the field
-	Description string // Description is extracted from the 'description' struct tag for the field
-	Default     string // Default is extracted from the 'default' struct tag for the field
+	Description string        // Description is extracted from the 'description' struct tag for the field
+	Default     string        // Default is extracted from the 'default' struct tag for the field
 }
 
 // generateEnvName returns a formated Environment variable string
 //
 // The variable name will be formatted as follows:
-//   - The envName will first process all uppercase letters (except the first instance) 
-//     and insert a preceding underscore '_', the the entire string will be converted to 
+//   - The envName will first process all uppercase letters (except the first instance)
+//     and insert a preceding underscore '_', the the entire string will be converted to
 //     uppercase. e.x. DebugLogging becomes DEBUG_LOGGING
 func (e *ArgEnv) generateEnvName(name string) (envName string, err error) {
 	for i, c := range name {
@@ -51,8 +51,8 @@ func (e *ArgEnv) generateEnvName(name string) (envName string, err error) {
 // generateFlagName returns command line flag string.
 //
 // The variable name will be formatted as follows:
-//   - The flagName will first process all uppercase letters (except the first instance) 
-//     and insert a preceding dash '-a', then the entire string will be converted to 
+//   - The flagName will first process all uppercase letters (except the first instance)
+//     and insert a preceding dash '-a', then the entire string will be converted to
 //     lowercase e.x.  DebugLogging becomes debug-logging
 func (e *ArgEnv) generateFlagName(name string) (flagName string, err error) {
 	for i, c := range name {
@@ -74,7 +74,7 @@ func (e *ArgEnv) Usage() {
 	fmt.Fprintf(os.Stdout, "ArgEnv Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
 	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
-	for _,e := range e.entries {
+	for _, e := range e.entries {
 		fmt.Fprintf(os.Stdout, "\t%s\n", e.EnvName)
 	}
 }
@@ -101,11 +101,11 @@ func (e *ArgEnv) scanStruct() (err error) {
 	// this pass will just grab, names, types, and struct tags and store them in ArgEnv.entries
 	for i := 0; i < numberOfFields; i++ {
 		e.entries[i] = Entry{
-			Name: val.Type().Field(i).Name,
-			Type: val.Type().Field(i).Type.String(),
-			Value: val.Field(i),
+			Name:        val.Type().Field(i).Name,
+			Type:        val.Type().Field(i).Type.String(),
+			Value:       val.Field(i),
 			Description: reflect.TypeOf(e.base).Elem().Field(i).Tag.Get("description"),
-			Default: reflect.TypeOf(e.base).Elem().Field(i).Tag.Get("default"),
+			Default:     reflect.TypeOf(e.base).Elem().Field(i).Tag.Get("default"),
 		}
 	}
 
@@ -136,7 +136,7 @@ func (e *ArgEnv) Load(o interface{}) {
 
 }
 
-			//EnvName, entry.FlagName = normalize(entry.Name)
+//EnvName, entry.FlagName = normalize(entry.Name)
 
 func (e *ArgEnv) setupFlags() (err error) {
 	e.values = make(map[string]interface{})

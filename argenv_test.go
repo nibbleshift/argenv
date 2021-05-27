@@ -21,10 +21,10 @@ type Test2 struct {
 }
 
 type Test3 struct {
-	ApiHost       string `default:"One" description:"Description of ApiHost"`
+	ApiHost     string `default:"One" description:"Description of ApiHost"`
 	DbHost      string `default:"Second" description:"Description of DbHost"`
-	EnableGlob     int    `default:"1" description:"Description of EnableGlob"`
-	AllowRoot  int    `default:"0" description:"Description of AllowRoot"`
+	EnableGlob  int    `default:"1" description:"Description of EnableGlob"`
+	AllowRoot   int    `default:"0" description:"Description of AllowRoot"`
 	SecureCopyR int    `default:"1" description:"Description of SecureCopyR"`
 }
 
