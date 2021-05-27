@@ -111,6 +111,7 @@ func (e *ArgEnv) scanStruct() (err error) {
 
 	return
 }
+
 // Load will scan the structure provided and populate the structure using parameters passed via Environment
 // variables or command line parameters.  If no values are found in either location, then default values specified
 // in the 'default' struct tag will be used to populate the structure.

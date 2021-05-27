@@ -30,17 +30,26 @@ type Test3 struct {
 }
 
 type Test4 struct {
-	FieldOne     string `default:"One" description:"Description of FieldOne"`
-	FieldTwo     string `default:"Second" description:"Description of FieldTwo"`
-	FieldThree  int    `default:"0" description:"Description of FieldThree"`
-	FieldFour   int    `default:"1" description:"Description of FieldFour"`
+	FieldOne         string `default:"One" description:"Description of FieldOne"`
+	FieldTwo         string `default:"Second" description:"Description of FieldTwo"`
+	FieldThree       int    `default:"0" description:"Description of FieldThree"`
+	FieldFour        int    `default:"1" description:"Description of FieldFour"`
 	FieldFiveAndLast int    `default:"2" description:"Description of FieldFiveAndLast"`
+}
+
+type Test5 struct {
+	ArgOne   string `default:"One" description:"Description of ArgOne"`
+	ArgTwo   string `default:"Second" description:"Description of ArgTwo"`
+	ArgThree int    `default:"0" description:"Description of ArgThree"`
+	ArgFour  int    `default:"1" description:"Description of ArgFour"`
+	ArgFive  int    `default:"2" description:"Description of ArgFiveAndLast"`
 }
 
 var test1 *Test1
 var test2 *Test2
 var test3 *Test3
 var test4 *Test4
+var test5 *Test5
 
 func assertEqual(t *testing.T, a interface{}, b interface{}) {
 	if a == b {
@@ -92,7 +101,7 @@ func TestUsage(t *testing.T) {
 	e.Load(test3)
 }
 
-func TestLoadFlags(t *testing.T) {
+func TestLoadArg(t *testing.T) {
 
 	os.Args = append(os.Args, "-field-one=first field")
 	os.Args = append(os.Args, "-field-two=second")
@@ -110,4 +119,29 @@ func TestLoadFlags(t *testing.T) {
 	assertEqual(t, test4.FieldFour, 56789)
 	assertEqual(t, test4.FieldFiveAndLast, -1)
 
+}
+
+func TestLoadEnvAndOverrideFlags(t *testing.T) {
+
+	os.Args = append(os.Args, "-arg-one=first field")
+	os.Args = append(os.Args, "-arg-two=second")
+	os.Args = append(os.Args, "-arg-three=155")
+	os.Args = append(os.Args, "-arg-four=56789")
+	os.Args = append(os.Args, "-arg-five=-1")
+
+	os.Setenv("ARG_ONE", "One")
+	os.Setenv("ARG_TWO", "Two")
+	os.Setenv("ARG_THREE", "3")
+	os.Setenv("ARG_FOUR", "4")
+	os.Setenv("ARG_FIVE", "5")
+
+	e := &ArgEnv{}
+	test5 = &Test5{}
+	e.Load(test5)
+
+	assertEqual(t, test5.ArgOne, "One")
+	assertEqual(t, test5.ArgTwo, "Two")
+	assertEqual(t, test5.ArgThree, 3)
+	assertEqual(t, test5.ArgFour, 4)
+	assertEqual(t, test5.ArgFive, 5)
 }
