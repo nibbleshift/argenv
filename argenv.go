@@ -202,8 +202,14 @@ func (e *ArgEnv) processEntries() (err error) {
 
 			if ok {
 				value = *ptrValue
-				e.entries[i].Value.SetString(value)
 			}
+
+			envValue, ok := os.LookupEnv(e.entries[i].EnvName)
+
+			if ok {
+				value = envValue
+			}
+			e.entries[i].Value.SetString(value)
 			break
 		case "int":
 			var value int
@@ -216,7 +222,6 @@ func (e *ArgEnv) processEntries() (err error) {
 
 			if ok {
 				value = *ptrValue
-				e.entries[i].Value.SetInt(int64(value))
 			}
 
 			intVal, err = strconv.ParseInt(e.entries[i].Default, 10, 64)
