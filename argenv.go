@@ -70,7 +70,7 @@ func (e *ArgEnv) generateFlagName(name string) (flagName string, err error) {
 // This is necessary because not only do we want to inform users about
 // flag options, but we also want to list the available environment
 // variables that can be used.
-func (e *ArgEnv) Usage() {
+func (e *ArgEnv) usage() {
 	fmt.Fprintf(os.Stdout, "ArgEnv Usage of %s:\n", os.Args[0])
 	flag.PrintDefaults()
 	fmt.Fprintf(os.Stderr, "Available Environment Variables:\n")
@@ -111,7 +111,11 @@ func (e *ArgEnv) scanStruct() (err error) {
 
 	return
 }
-
+// Load will scan the structure provided and populate the structure using parameters passed via Environment
+// variables or command line parameters.  If no values are found in either location, then default values specified
+// in the 'default' struct tag will be used to populate the structure.
+//
+//  It is important to note that Environment variables will take precedence over command line parameters.
 func (e *ArgEnv) Load(o interface{}) {
 	var (
 		err error
@@ -136,8 +140,7 @@ func (e *ArgEnv) Load(o interface{}) {
 
 }
 
-//EnvName, entry.FlagName = normalize(entry.Name)
-
+// setupFlags will setup flag command line parsing from the entries collected during the scan
 func (e *ArgEnv) setupFlags() (err error) {
 	e.values = make(map[string]interface{})
 	// setup arguments for flags
@@ -157,11 +160,15 @@ func (e *ArgEnv) setupFlags() (err error) {
 	}
 
 	// Overwrite default usage with ours and parse flags
-	flag.Usage = e.Usage
+	flag.Usage = e.usage
+
+	// parse all of the flags we've setup
 	flag.Parse()
+
 	return
 }
 
+// generateVariableNames will populate entries with the environment variable names and command line flag names
 func (e *ArgEnv) generateVariableNames() (err error) {
 	for i := 0; i < len(e.entries); i++ {
 		e.entries[i].EnvName, err = e.generateEnvName(e.entries[i].Name)
@@ -179,6 +186,7 @@ func (e *ArgEnv) generateVariableNames() (err error) {
 	return
 }
 
+// processEntries will scan the environment and command line parameters and populate the struct provided in Load() with the correct values
 func (e *ArgEnv) processEntries() (err error) {
 	err = e.generateVariableNames()
 
