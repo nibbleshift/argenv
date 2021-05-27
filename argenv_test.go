@@ -45,11 +45,20 @@ type Test5 struct {
 	ArgFive  int    `default:"2" description:"Description of ArgFiveAndLast"`
 }
 
+type Test6 struct {
+	DefaultOne   string `default:"One" description:"Description of DefaultOne"`
+	DefaultTwo   string `default:"Second" description:"Description of DefaultTwo"`
+	DefaultThree int    `default:"0" description:"Description of DefaultThree"`
+	DefaultFour  int    `default:"1" description:"Description of DefaultFour"`
+	DefaultFive  int    `default:"2" description:"Description of DefaultFiveAndLast"`
+}
+
 var test1 *Test1
 var test2 *Test2
 var test3 *Test3
 var test4 *Test4
 var test5 *Test5
+var test6 *Test6
 
 func assertEqual(t *testing.T, a interface{}, b interface{}) {
 	if a == b {
@@ -102,7 +111,6 @@ func TestUsage(t *testing.T) {
 }
 
 func TestLoadArg(t *testing.T) {
-
 	os.Args = append(os.Args, "-field-one=first field")
 	os.Args = append(os.Args, "-field-two=second")
 	os.Args = append(os.Args, "-field-three=155")
@@ -122,7 +130,6 @@ func TestLoadArg(t *testing.T) {
 }
 
 func TestLoadEnvAndOverrideFlags(t *testing.T) {
-
 	os.Args = append(os.Args, "-arg-one=first field")
 	os.Args = append(os.Args, "-arg-two=second")
 	os.Args = append(os.Args, "-arg-three=155")
@@ -144,4 +151,16 @@ func TestLoadEnvAndOverrideFlags(t *testing.T) {
 	assertEqual(t, test5.ArgThree, 3)
 	assertEqual(t, test5.ArgFour, 4)
 	assertEqual(t, test5.ArgFive, 5)
+}
+
+func TestLoadDefaults(t *testing.T) {
+	e := &ArgEnv{}
+	test6 = &Test6{}
+	e.Load(test6)
+
+	assertEqual(t, test6.DefaultOne, "One")
+	assertEqual(t, test6.DefaultTwo, "Second")
+	assertEqual(t, test6.DefaultThree, 0)
+	assertEqual(t, test6.DefaultFour, 1)
+	assertEqual(t, test6.DefaultFive, 2)
 }
