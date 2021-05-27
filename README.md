@@ -70,3 +70,30 @@ go run main.go -ip-address=192.168.100.1 -port-number=8080 \
  Shell: (string) (len=9) "/bin/bash"
 })
 ```
+
+#### Running Example Usage:
+
+```
+go run main.go -h
+```
+
+#### Output 
+```
+ArgEnv Usage of /tmp/go-build1573678449/b001/exe/main:
+  -ethernet-device string
+        Specify NIC to configure (default "eth0")
+  -ip-address string
+        IP Address to listen on (default "127.0.0.1")
+  -port-number int
+        IP Address to listen on (default 80)
+  -shell string
+        Default Shell (default "/bin/bash")
+  -username string
+        Default user (default "root")
+Available Environment Variables:
+        ETHERNET_DEVICE
+        IP_ADDRESS
+        PORT_NUMBER
+        USERNAME
+        SHELL
+```
