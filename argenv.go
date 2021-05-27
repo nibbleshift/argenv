@@ -239,7 +239,6 @@ func (e *ArgEnv) processEntries() (err error) {
 
 				if err == nil {
 					value = int(intVal)
-					fmt.Println(value)
 				}
 			}
 
