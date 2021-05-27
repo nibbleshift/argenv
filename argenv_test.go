@@ -63,7 +63,7 @@ func TestLoadEnv(t *testing.T) {
 }
 
 func TestUsage(t *testing.T) {
-
+	//os.Args = append(os.Args, "-h")
 	os.Setenv("APPLE", "Two")
 	os.Setenv("ORANGE", "First")
 	os.Setenv("BANANA", "66")
