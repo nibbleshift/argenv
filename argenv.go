@@ -159,6 +159,14 @@ func (e *ArgEnv) setupFlags() (err error) {
 
 			flag.IntVar(&value, e.entries[i].FlagName, int(defaultValue), e.entries[i].Description)
 			e.values[e.entries[i].Name] = &value
+		case "bool":
+			var value bool
+			var defaultValue bool
+
+			defaultValue, _ = strconv.ParseBool(e.entries[i].Default)
+
+			flag.BoolVar(&value, e.entries[i].FlagName, defaultValue, e.entries[i].Description)
+			e.values[e.entries[i].Name] = &value
 		default:
 			log.Printf("Unknown type %s\n", e.entries[i].Type)
 		}
@@ -253,6 +261,35 @@ func (e *ArgEnv) processEntries() (err error) {
 				}
 			}
 			e.entries[i].Value.SetInt(int64(value))
+		case "bool":
+			var value bool
+			var boolVal bool
+			var ok bool
+			var err error
+			var ptrValue *bool
+
+			ptrValue, ok = e.values[e.entries[i].Name].(*bool)
+
+			if ok {
+				value = *ptrValue
+			} else {
+				boolVal, err = strconv.ParseBool(e.entries[i].Default)
+
+				if err == nil {
+					value = boolVal
+				}
+			}
+
+			strEnvValue, ok := os.LookupEnv(e.entries[i].EnvName)
+
+			if ok {
+				boolVal, err = strconv.ParseBool(strEnvValue)
+
+				if err == nil {
+					value = boolVal
+				}
+			}
+			e.entries[i].Value.SetBool(value)
 		default:
 			log.Printf("Unknown type %s\n", e.entries[i].Type)
 		}

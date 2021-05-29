@@ -53,12 +53,36 @@ type Test6 struct {
 	DefaultFive  int    `default:"2" description:"Description of DefaultFiveAndLast"`
 }
 
+type Test7 struct {
+	BoolOne   bool `default:"true" description:"Description of BoolOne"`
+	BoolTwo   bool `default:"false" description:"Description of BoolTwo"`
+	BoolThree bool `default:"true" description:"Description of BoolThree"`
+	BoolFour  bool `default:"false" description:"Description of BoolFour"`
+}
+
+type Test8 struct {
+	ArgBoolOne   bool `default:"true" description:"Description of ArgBoolOne"`
+	ArgBoolTwo   bool `default:"false" description:"Description of ArgBoolTwo"`
+	ArgBoolThree bool `default:"true" description:"Description of ArgBoolThree"`
+	ArgBoolFour  bool `default:"false" description:"Description of ArgBoolFour"`
+}
+
+type Test9 struct {
+	EnvBoolOne   bool `default:"true" description:"Description of EnvBoolOne"`
+	EnvBoolTwo   bool `default:"true" description:"Description of EnvBoolTwo"`
+	EnvBoolThree bool `default:"false" description:"Description of EnvBoolThree"`
+	EnvBoolFour  bool `default:"false" description:"Description of EnvBoolFour"`
+}
+
 var test1 *Test1
 var test2 *Test2
 var test3 *Test3
 var test4 *Test4
 var test5 *Test5
 var test6 *Test6
+var test7 *Test7
+var test8 *Test8
+var test9 *Test9
 
 func assertEqual(t *testing.T, a interface{}, b interface{}) {
 	if a == b {
@@ -163,4 +187,47 @@ func TestLoadDefaults(t *testing.T) {
 	assertEqual(t, test6.DefaultThree, 0)
 	assertEqual(t, test6.DefaultFour, 1)
 	assertEqual(t, test6.DefaultFive, 2)
+}
+
+func TestLoadDefaultBool(t *testing.T) {
+	e := &ArgEnv{}
+	test7 = &Test7{}
+	e.Load(test7)
+
+	assertEqual(t, test7.BoolOne, true)
+	assertEqual(t, test7.BoolTwo, false)
+	assertEqual(t, test7.BoolThree, true)
+	assertEqual(t, test7.BoolFour, false)
+}
+
+func TestLoadArgBool(t *testing.T) {
+	os.Args = append(os.Args, "-arg-bool-one=false")
+	os.Args = append(os.Args, "-arg-bool-two=true")
+	os.Args = append(os.Args, "-arg-bool-three=true")
+	os.Args = append(os.Args, "-arg-bool-four=true")
+
+	e := &ArgEnv{}
+	test8 = &Test8{}
+	e.Load(test8)
+
+	assertEqual(t, test8.ArgBoolOne, false)
+	assertEqual(t, test8.ArgBoolTwo, true)
+	assertEqual(t, test8.ArgBoolThree, true)
+	assertEqual(t, test8.ArgBoolFour, true)
+}
+
+func TestLoadEnvBool(t *testing.T) {
+	os.Setenv("ENV_BOOL_ONE", "false")
+	os.Setenv("ENV_BOOL_TWO", "false")
+	os.Setenv("ENV_BOOL_THREE", "true")
+	os.Setenv("ENV_BOOL_FOUR", "true")
+
+	e := &ArgEnv{}
+	test9 = &Test9{}
+	e.Load(test9)
+
+	assertEqual(t, test9.EnvBoolOne, false)
+	assertEqual(t, test9.EnvBoolTwo, false)
+	assertEqual(t, test9.EnvBoolThree, true)
+	assertEqual(t, test9.EnvBoolFour, true)
 }
