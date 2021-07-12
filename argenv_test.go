@@ -74,6 +74,13 @@ type Test9 struct {
 	EnvBoolFour  bool `default:"false" description:"Description of EnvBoolFour"`
 }
 
+type Test10 struct {
+	Float32One   float64 `default:"1.1" description:"Description of EnvFloatOne"`
+	Float32Two   float64 `default:"1.2" description:"Description of EnvFloatTwo"`
+	Float32Three float64 `default:"0.1" description:"Description of EnvFloatThree"`
+	Float32Four  float64 `default:"0.001" description:"Description of EnvFloatFour"`
+}
+
 var test1 *Test1
 var test2 *Test2
 var test3 *Test3
@@ -83,6 +90,7 @@ var test6 *Test6
 var test7 *Test7
 var test8 *Test8
 var test9 *Test9
+var test10 *Test10
 
 func assertEqual(t *testing.T, a interface{}, b interface{}) {
 	if a == b {
@@ -230,4 +238,15 @@ func TestLoadEnvBool(t *testing.T) {
 	assertEqual(t, test9.EnvBoolTwo, false)
 	assertEqual(t, test9.EnvBoolThree, true)
 	assertEqual(t, test9.EnvBoolFour, true)
+}
+
+func TestLoadDefaultFloat32(t *testing.T) {
+	e := &ArgEnv{}
+	test10 = &Test10{}
+	e.Load(test10)
+
+	assertEqual(t, test10.Float32One, 1.1)
+	assertEqual(t, test10.Float32Two, 1.2)
+	assertEqual(t, test10.Float32Three, 0.1)
+	assertEqual(t, test10.Float32Four, 0.001)
 }

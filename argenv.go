@@ -159,6 +159,14 @@ func (e *ArgEnv) setupFlags() (err error) {
 
 			flag.IntVar(&value, e.entries[i].FlagName, int(defaultValue), e.entries[i].Description)
 			e.values[e.entries[i].Name] = &value
+		case "float64":
+			var value float64
+			var defaultValue float64
+
+			defaultValue, _ = strconv.ParseFloat(e.entries[i].Default, 64)
+
+			flag.Float64Var(&value, e.entries[i].FlagName, float64(defaultValue), e.entries[i].Description)
+			e.values[e.entries[i].Name] = &value
 		case "bool":
 			var value bool
 			var defaultValue bool
@@ -168,7 +176,7 @@ func (e *ArgEnv) setupFlags() (err error) {
 			flag.BoolVar(&value, e.entries[i].FlagName, defaultValue, e.entries[i].Description)
 			e.values[e.entries[i].Name] = &value
 		default:
-			log.Printf("Unknown type %s\n", e.entries[i].Type)
+          log.Printf("setupFlags: Unknown type %s\n", e.entries[i].Type)
 		}
 	}
 
@@ -261,6 +269,35 @@ func (e *ArgEnv) processEntries() (err error) {
 				}
 			}
 			e.entries[i].Value.SetInt(int64(value))
+		case "float64":
+			var value float64
+			var floatVal float64
+			var ok bool
+			var err error
+			var ptrValue *float64
+
+			ptrValue, ok = e.values[e.entries[i].Name].(*float64)
+
+			if ok {
+				value = *ptrValue
+			} else {
+				floatVal, err = strconv.ParseFloat(e.entries[i].Default, 64)
+
+				if err == nil {
+					value = float64(floatVal)
+				}
+			}
+
+			strEnvValue, ok := os.LookupEnv(e.entries[i].EnvName)
+
+			if ok {
+				floatVal, err = strconv.ParseFloat(strEnvValue, 64)
+
+				if err == nil {
+					value = float64(floatVal)
+				}
+			}
+			e.entries[i].Value.SetFloat(float64(value))
 		case "bool":
 			var value bool
 			var boolVal bool
