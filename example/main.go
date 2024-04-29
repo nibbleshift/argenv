@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/davecgh/go-spew/spew"
-	"gitlab.com/nibbleshift/argenv"
+	"github.com/nibbleshift/argenv"
 )
 
 type MySettings struct {
