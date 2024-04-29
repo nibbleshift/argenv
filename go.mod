@@ -1,4 +1,4 @@
-module gitlab.com/nibbleshift/argenv
+module github.com/nibbleshift/argenv
 
 go 1.21
 
