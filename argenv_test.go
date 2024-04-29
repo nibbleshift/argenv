@@ -17,7 +17,7 @@ type Test2 struct {
 	Orange      string `default:"Second" description:"Description of SecondVariable"`
 	Banana      int    `default:"33" description:"Description of ThirdVariableS"`
 	AppleSauce  int    `default:"0" description:"Description of ThirdVariableS"`
-	AppleSauceS int    `default:"0" description:"Description of AppleSauceS`
+	AppleSauceS int    `default:"0" description:"Description of AppleSauceS"`
 	StrawBerry  string `default:"Apples" description:"Description of StrawBerry"`
 }
 
@@ -79,6 +79,13 @@ type Test10 struct {
 	Float32Two   float64 `default:"1.2" description:"Description of EnvFloatTwo"`
 	Float32Three float64 `default:"0.1" description:"Description of EnvFloatThree"`
 	Float32Four  float64 `default:"0.001" description:"Description of EnvFloatFour"`
+}
+
+type Test11 struct {
+	InitOne   float64 `default:"1.1" description:"Description of EnvInitOne"`
+	InitTwo   string  `default:"Test" description:"Description of EnvInitTwo"`
+	InitThree bool    `default:"true" description:"Description of EnvInitThree"`
+	InitFour  int     `default:"5" description:"Description of EnvInitFour"`
 }
 
 var test1 *Test1
@@ -249,4 +256,13 @@ func TestLoadDefaultFloat32(t *testing.T) {
 	assertEqual(t, test10.Float32Two, 1.2)
 	assertEqual(t, test10.Float32Three, 0.1)
 	assertEqual(t, test10.Float32Four, 0.001)
+}
+
+func TestInitVariety(t *testing.T) {
+	test11 := &Test11{}
+	Init(test11)
+	assertEqual(t, test11.InitOne, 1.1)
+	assertEqual(t, test11.InitTwo, "Test")
+	assertEqual(t, test11.InitThree, true)
+	assertEqual(t, test11.InitFour, 5)
 }

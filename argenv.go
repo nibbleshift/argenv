@@ -4,13 +4,14 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	_ "github.com/davecgh/go-spew/spew"
 	"log"
 	"os"
 	"reflect"
 	"strconv"
 	"strings"
 	"unicode"
+
+	_ "github.com/davecgh/go-spew/spew"
 )
 
 // ArgEnv represents the object used to process Environment and command line parameters.
@@ -92,7 +93,7 @@ func (e *ArgEnv) scanStruct() (err error) {
 
 	// bail out if there are no fields to scan
 	if numberOfFields < 1 {
-		err = errors.New("Struct has no fields to scan")
+		err = errors.New("struct has no fields to scan")
 		return
 	}
 
@@ -112,11 +113,17 @@ func (e *ArgEnv) scanStruct() (err error) {
 	return
 }
 
+// Init will load all of your parameters into o
+func Init(o any) {
+	e := &ArgEnv{}
+	e.Load(o)
+}
+
 // Load will scan the structure provided and populate the structure using parameters passed via Environment
 // variables or command line parameters.  If no values are found in either location, then default values specified
 // in the 'default' struct tag will be used to populate the structure.
 //
-//  It is important to note that Environment variables will take precedence over command line parameters.
+//	It is important to note that Environment variables will take precedence over command line parameters.
 func (e *ArgEnv) Load(o interface{}) {
 	var (
 		err error
@@ -176,7 +183,7 @@ func (e *ArgEnv) setupFlags() (err error) {
 			flag.BoolVar(&value, e.entries[i].FlagName, defaultValue, e.entries[i].Description)
 			e.values[e.entries[i].Name] = &value
 		default:
-          log.Printf("setupFlags: Unknown type %s\n", e.entries[i].Type)
+			log.Printf("setupFlags: Unknown type %s\n", e.entries[i].Type)
 		}
 	}
 
@@ -239,7 +246,6 @@ func (e *ArgEnv) processEntries() (err error) {
 				value = envValue
 			}
 			e.entries[i].Value.SetString(value)
-			break
 		case "int":
 			var value int
 			var intVal int64
