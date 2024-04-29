@@ -10,8 +10,6 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-
-	_ "github.com/davecgh/go-spew/spew"
 )
 
 // ArgEnv represents the object used to process Environment and command line parameters.
